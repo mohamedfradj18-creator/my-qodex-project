@@ -1,0 +1,33 @@
+# End-to-end tests
+
+The built CLI, run as a real subprocess on the demo repo with the real scanner binaries. Nothing is faked. Use Node 22 with pnpm 9 and build first:
+
+```sh
+PATH=/opt/homebrew/opt/node@22/bin:$PATH pnpm build
+PATH=/opt/homebrew/opt/node@22/bin:$PATH pnpm test:e2e
+```
+
+`OPENQODEX_E2E_HOME` selects the shared scanner tools folder. It defaults to `<os tmpdir>/openqodex-e2e-home`. The suite runs `doctor --install` into it once before the scanner cases; the first install from an empty folder may take 20 minutes, later runs reuse it. Each subprocess gets its own temporary `HOME`, so the real home folder is never touched.
+
+`OPENQODEX_E2E_OFFLINE=1` skips the semgrep, osv-scanner and custom GitHub release assertions, with a printed reason. `OPENQODEX_PREINSTALL_FULL=1` runs `preinstall-full`, the strict preinstall of every scanner into a clean install root (about 1 GB of downloads); without it that file is skipped with a printed reason. The release workflow's check after each publish sets it. With `CI` set, the builtin scanner check fails when any scanner was skipped (brakeman and rubocop need Ruby, golangci-lint needs Go).
+
+Every subprocess also gets `OPENQODEX_AUTO_UPDATE=0`, so a command run through the launcher starts no update worker. The `self-update` cases remove it.
+
+Three variables are a test seam for the update worker, honoured only when `OPENQODEX_E2E=1` is also set: `OPENQODEX_UPDATE_AS=<x.y.z>` makes the worker choose releases as if it ran that version, and `OPENQODEX_UPDATE_MIN_AGE_MS=<ms>` replaces the 24 hour age rule. `OPENQODEX_UPDATE_PAUSE=<stage>` (`before-metadata`, `before-boundary`, `in-boundary`, `after-publish`) makes the worker write `update-paused` in its home folder at that stage and wait until a test removes it. Verification is never skipped. With them, a temp-home install really downloads and verifies a published release.
+
+Every case guards one failure, named in its title. The groups:
+
+- `demo-flow`: one demo repo through init, the push hook, scan, review --agent and review --finalize; planted bugs found, the secret never shown, the repository unchanged by each command.
+- `review-finalize`: submissions finalize must reject, finalizing an older run by its path, a critical finding that blocks.
+- `review-target`: `review <branch>` and `review #<n>` on temp repos with a local bare remote (a pull request is a real `refs/pull/<n>/head` ref there): the base order, the head fetch and `--offline`, the developer's settings and approvals, no hook or filter run at checkout, checkouts only under the openqodex home, the temporary checkout's life through finalize, and a deletion-only finding that counts.
+- `block`, `scopes`, `no-tools`, `offline`, `git-hook`, `hook-links`, `custom-scanner`, `clean-repo`, `cli`, `semgrep-packs`: one behaviour each.
+- `scan-trail`: the scan record in `scan.json`: the selector's choice for all 22 built-in scanners, and one trail entry per raw finding with the stage that dropped or kept it, on the demo scan and on the demo with a drop at every stage (a file outside the change, an unchanged line, a fixture file, a disabled rule, a merge). A review of the same change writes the same trail.
+- `library-scan`: the library's `reviewChange` from the built package, in the server profile, on the demo change committed in a clone, with the real scanners and a model provider stand-in that drops every candidate: the result carries the scan record and the phase timings, the demo's secret appears nowhere in the result, and the scan record equals the `scan.json` the CLI writes for the same change, less each scanner's durations and the secrets' fingerprints.
+- `bench-scan`: the scanner-only benchmark run (`benchmark/run.mjs --mode scan`, after `benchmark/build-cli.mjs`) on planted cases with the real scanners: two passes on one build are identical and record the Semgrep rule packs, the osv.dev advisory hash and the time of each pass; a custom scanner whose output changes between the passes makes the run exit 3 and names the file; an overlay's custom scanner runs only after the run's own `openqodex trust`, which never touches the developer's approvals, and a trust step that fails scans nothing; a home without the scanners is refused unless `--allow-missing-scanners`.
+- `incomplete-report`: a review stopped at `--timeout 1`, with a Claude Code stand-in that never answers, on the demo change plus a SQL file sqllint flags: every scanner candidate is listed as unchecked in the receipt, `report.md`, `report.json` and `report.sarif` with its file, line, rule, scanner and message; the review stays incomplete and exits 2; the demo's secret appears in no output.
+- `timings`: the phase timings in `report.json` of a scan and of a review, the review with the golden run's Claude Code stand-in as the model provider: `scan_ms` is never below the slowest scanner, `reviewer_ms` never below the reviewer's own duration, and the phases add up to within 5% of `total_ms`.
+- `update-verify`: release verification against the real published 0.2.0 tarball and its real attestations.
+- `self-update`: the whole update chain against the real registry, in a temp home holding a launcher install of this build made to run as 0.1.0: the command does not wait for the worker; the newest published release is downloaded, verified, started, activated through the commit boundary and run by the launcher; this build rolls back from it; and with nothing newer nothing is installed. `packages/cli/test/self-update.test.ts` covers the trigger, the switches, the notice, retention, rollback and finalize without the registry; `self-update-safety.test.ts` covers the commit boundary, crashes and races.
+- `adapters`: each of the thirteen builtin scanners on a tiny planted input (`packages/scanners/test/adapters.subprocess.test.ts`).
+
+Receipts go to `tests/e2e/runs/<yyyymmdd-hhmmss>/` (gitignored, path printed at the end). Each command saves its command line, exit code, duration, stdout and stderr; the demo scan also saves `report.json`, `report.md`, `report.sarif` and the terminal output.
