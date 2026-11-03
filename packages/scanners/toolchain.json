@@ -262,37 +262,37 @@
       "needs": "go"
     },
     "uv": {
-      "version": "0.12.22",
+      "version": "0.13.6",
       "method": "github-release",
       "repo": "astral-sh/uv",
-      "tag": "0.12.22",
+      "tag": "0.13.6",
       "binary": "uv",
       "assets": {
         "darwin-arm64": {
           "name": "uv-aarch64-apple-darwin.tar.gz",
-          "url": "https://github.com/astral-sh/uv/releases/download/0.12.22/uv-aarch64-apple-darwin.tar.gz",
-          "sha256": "5d714de09501a59393ceca78f4bc232a50478729640d251907160299b2a93ddd",
+          "url": "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-aarch64-apple-darwin.tar.gz",
+          "sha256": "60fbd5c8a1ed681845eea28d9d622fcde03c51e91a43465b64a1e17db1ed3472",
           "archive": "tar.gz",
           "binaryPath": "uv-aarch64-apple-darwin/uv"
         },
         "darwin-x64": {
           "name": "uv-x86_64-apple-darwin.tar.gz",
-          "url": "https://github.com/astral-sh/uv/releases/download/0.12.22/uv-x86_64-apple-darwin.tar.gz",
-          "sha256": "1b8a5b316883df2daf20fb9a446e5b230e01d947d57aba2694977c5ac5a7e98c",
+          "url": "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-x86_64-apple-darwin.tar.gz",
+          "sha256": "63ba17fdda55ad1a230d4b37fc6017ffa10c23688c83818bd3bfdf914c652a02",
           "archive": "tar.gz",
           "binaryPath": "uv-x86_64-apple-darwin/uv"
         },
         "linux-x64": {
           "name": "uv-x86_64-unknown-linux-gnu.tar.gz",
-          "url": "https://github.com/astral-sh/uv/releases/download/0.12.22/uv-x86_64-unknown-linux-gnu.tar.gz",
-          "sha256": "b9980552309f09c15172b8be828555e375097f16deb459795ce7bfd200380f0b",
+          "url": "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-x86_64-unknown-linux-gnu.tar.gz",
+          "sha256": "f29c3e94ffabd7e6f3ba521dba169a9b7ec12100bf3257087f0f24f6123f3645",
           "archive": "tar.gz",
           "binaryPath": "uv-x86_64-unknown-linux-gnu/uv"
         },
         "linux-arm64": {
           "name": "uv-aarch64-unknown-linux-gnu.tar.gz",
-          "url": "https://github.com/astral-sh/uv/releases/download/0.12.22/uv-aarch64-unknown-linux-gnu.tar.gz",
-          "sha256": "6f66a14e8239871fb477f9746c941fedfa77e8fe28a8bc7c07e1dc7f53a66712",
+          "url": "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-aarch64-unknown-linux-gnu.tar.gz",
+          "sha256": "229e194255c7958d86d56e8790d969a6f74736592133f0dfd0076f754c642c1d",
           "archive": "tar.gz",
           "binaryPath": "uv-aarch64-unknown-linux-gnu/uv"
         }
