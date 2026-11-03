@@ -353,12 +353,12 @@
       "binary": "bandit"
     },
     "brakeman": {
-      "version": "6.2.1",
+      "version": "8.1.0",
       "method": "gem",
       "gems": [
-        "brakeman:6.2.1"
+        "brakeman:8.1.0"
       ],
-      "needs": "ruby>=3.0",
+      "needs": "ruby>=3.2",
       "binary": "brakeman"
     },
     "rubocop": {
