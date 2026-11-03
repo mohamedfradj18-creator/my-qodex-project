@@ -528,7 +528,7 @@
       }
     },
     "checkov": {
-      "version": "3.3.22",
+      "version": "3.3.30",
       "method": "uv",
       "package": "checkov",
       "python": "3.11",
