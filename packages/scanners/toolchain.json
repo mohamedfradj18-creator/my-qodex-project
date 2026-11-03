@@ -362,12 +362,12 @@
       "binary": "brakeman"
     },
     "rubocop": {
-      "version": "1.69.2",
+      "version": "1.92.1",
       "method": "gem",
       "gems": [
-        "rubocop:1.69.2",
-        "rubocop-rails:2.28.0",
-        "rubocop-performance:1.23.0"
+        "rubocop:1.92.1",
+        "rubocop-rails:2.38.0",
+        "rubocop-performance:1.27.0"
       ],
       "needs": "ruby>=2.7",
       "binary": "rubocop"
